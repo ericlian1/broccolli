@@ -17,6 +17,9 @@ import uuid from 'uuid';
 import Environment from './config/environment';
 import firebase from './config/firebase';
 
+
+import MainTabNavigator from './navigation/MainTabNavigator';
+
 export default class App extends React.Component {
 	state = {
 		image: null,
