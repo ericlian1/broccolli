@@ -1,6 +1,8 @@
 import React from 'react';
 import { Image, Platform } from 'react-native';
-import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
+import { createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
 import {Ionicons} from '@expo/vector-icons';
 import Header from 'react-native-elements';
 
@@ -11,11 +13,10 @@ const HomeStack = createStackNavigator({Home: HomeScreen});
   
 const ListStack = createStackNavigator({List: ListScreen});
 
-export default createBottomTabNavigator(
+export default createAppContainer(createBottomTabNavigator(
     {
       List: {screen: ListStack},
-      Home: { screen: HomeStack},
-
+      Home: {screen: HomeStack}
     },
     {
       navigationOptions: ({ navigation }) => ({
@@ -40,5 +41,5 @@ export default createBottomTabNavigator(
         showLabel:false,
       },
     }
-  );
+  ));
   

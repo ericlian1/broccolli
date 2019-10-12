@@ -14,8 +14,8 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import uuid from 'uuid';
-import Environment from './config/environment';
-import firebase from './config/firebase';
+import Environment from '../config/environment';
+import firebase from '../config/firebase';
 import {ListItem} from 'react-native-elements';
 
 export default class App extends React.Component {
@@ -131,7 +131,7 @@ export default class App extends React.Component {
 
 				<Text>Raw JSON:</Text>
 
-				{googleResponse &&         
+				{this.state.response && this.state.items &&
 					this.state.items.map((item,i)=>
 						<ListItem
 							key={i}
@@ -174,7 +174,7 @@ export default class App extends React.Component {
 	_takePhoto = async () => {
 		let pickerResult = await ImagePicker.launchCameraAsync({
 			allowsEditing: true,
-			aspect: [4, 3]
+			//aspect: [4, 3]
 		});
 
 		this._handleImagePicked(pickerResult);
@@ -183,7 +183,7 @@ export default class App extends React.Component {
 	_pickImage = async () => {
 		let pickerResult = await ImagePicker.launchImageLibraryAsync({
 			allowsEditing: true,
-			aspect: [4, 3]
+			//aspect: [4, 3]
 		});
 
 		this._handleImagePicked(pickerResult);
@@ -270,30 +270,29 @@ export default class App extends React.Component {
 									last_word = temp;
 								else{
 									if(!isNaN(last_word)){
-										if (isNaN(temp))
-											items.push({name: last_word});
-										else
-											item.push({name: last_word + ' ' + temp});
-									}
-								}
-
-								if (+last_word != NaN){
-									if (temp == 'N' || temp == 'F'){
-										items[index]['price'] = +price;
-										index++;
 										price = '';
+										if (isNaN(temp))
+											items.push({name: temp});
+										else
+											items.push({name: last_word + ' ' + temp});
+									}else{
+										if (temp == 'N' || temp == 'F'){
+											items[index]['price'] = +price;
+											index++;
+											price = '';
+										}
+										if (temp == '.'){
+											price += (last_word+temp);
+										}
 									}
-									if (temp == '.'){
-										price += (last_word+temp);
-									}
-								}
-								if (+temp != NaN && last_word == 'TOTAL')
-									total = +temp;
-									
-								if (last_word == "." && isNaN(temp))
-									price += temp;
+									if (isNaN(temp) && last_word == 'TOTAL')
+										total = +temp;
+										
+									if (last_word == "." && isNaN(temp))
+										price += temp;
 
-								last_word = temp;
+									last_word = temp;
+								}
 							}
 							// if(w['property']['detectedBreak']['type']=='SURE_SPACE'){
 								
