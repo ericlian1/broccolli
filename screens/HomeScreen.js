@@ -278,7 +278,7 @@ export default class App extends React.Component {
 								}
 
 								if (+last_word != NaN){
-									if (temp == 'N' || temp == 'F')){
+									if (temp == 'N' || temp == 'F'){
 										items[index]['price'] = +price;
 										index++;
 										price = '';
@@ -287,7 +287,7 @@ export default class App extends React.Component {
 										price += (last_word+temp);
 									}
 								}
-								if (+temp != NaN && last_word == 'TOTAL'){
+								if (+temp != NaN && last_word == 'TOTAL')
 									total = +temp;
 									
 								if (last_word == "." && isNaN(temp))

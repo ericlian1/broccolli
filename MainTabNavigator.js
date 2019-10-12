@@ -4,8 +4,8 @@ import { createStackNavigator, createBottomTabNavigator } from 'react-navigation
 import {Ionicons} from '@expo/vector-icons';
 import Header from 'react-native-elements';
 
-import HomeScreen from '../screens/HomeScreen';
-import ListScreen from '../screens/ListScreen';
+import HomeScreen from './screens/HomeScreen';
+import ListScreen from './screens/ListScreen';
 
 const HomeStack = createStackNavigator({Home: HomeScreen});
   

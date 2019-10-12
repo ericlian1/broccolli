@@ -14,6 +14,8 @@
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-35.0.0.tar.gz",
     "react-native-elements": "^1.2.6",
+    "react-native-gesture-handler": "^1.4.1",
+    "react-navigation": "^4.0.10",
     "scheduler": "^0.16.2",
     "uuid": "^3.3.2"
   },

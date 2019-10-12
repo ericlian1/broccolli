@@ -1,4 +1,4 @@
-import MainTabNavigator from './navigation/MainTabNavigator';
+import MainTabNavigator from './MainTabNavigator';
 
 export default class App extends React.Component {
 	render(){
