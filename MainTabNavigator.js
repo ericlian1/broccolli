@@ -6,19 +6,22 @@ import Header from 'react-native-elements';
 
 import HomeScreen from '../screens/HomeScreen';
 import ListScreen from '../screens/ListScreen';
+import GroceryListScreen from '../screens/GroceryListScreen';
 
 const HomeStack = createStackNavigator({Home: HomeScreen});
   
 const ListStack = createStackNavigator({List: ListScreen});
 
+const GroceryListStack = createStackNavigator({Grocery: GroceryListScreen});
+
 export default createBottomTabNavigator(
     {
       List: {screen: ListStack},
-      Home: { screen: HomeStack},
-
+      Home: {screen: HomeStack},
+      Grocery: {screen: GroceryListStack},
     },
     {
-      navigationOptions: ({ navigation }) => ({
+      defaultNavigationOptions: ({ navigation }) => ({
         tabBarIcon: ({ focused, tintColor }) => {
           const { routeName } = navigation.state;
           let iconName;
@@ -26,7 +29,10 @@ export default createBottomTabNavigator(
             iconName = 'ios-camera';
           } 
           else if(routeName==='List'){
-            iconName = 'ios-list-box'
+            iconName = 'ios-list-box';
+          }
+          else if(routeName === 'Grocery'){
+            iconName = 'local-grocery-store';
           }
   
           // You can return any component that you like here! We usually use an
