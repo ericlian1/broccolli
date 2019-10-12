@@ -16,6 +16,7 @@ import * as Permissions from 'expo-permissions';
 import uuid from 'uuid';
 import Environment from './config/environment';
 import firebase from './config/firebase';
+import {ListItem} from 'react-native-elements';
 
 
 import MainTabNavigator from './navigation/MainTabNavigator';
@@ -24,7 +25,7 @@ export default class App extends React.Component {
 	state = {
 		image: null,
 		uploading: false,
-		googleResponse: null
+		response: null
 	};
 
 	async componentDidMount() {
@@ -54,14 +55,6 @@ export default class App extends React.Component {
 						/>
 
 						<Button onPress={this._takePhoto} title="Take a photo" />
-						{this.state.googleResponse && (
-							<FlatList
-								data={this.state.googleResponse.responses[0].labelAnnotations}
-								extraData={this.state}
-								keyExtractor={this._keyExtractor}
-								renderItem={({ item }) => <Text>Item: {item.description}</Text>}
-							/>
-						)}
 						{this._maybeRenderImage()}
 						{this._maybeRenderUploadingOverlay()}
 					</View>
@@ -141,8 +134,14 @@ export default class App extends React.Component {
 
 				<Text>Raw JSON:</Text>
 
-				{googleResponse && 
-					<Text>{this.state.googleResponse.responses.fullTextAnnotation}</Text>}
+				{googleResponse &&         
+					this.state.items.map((item,i)=>
+						<ListItem
+							key={i}
+							title={item.name}
+							rightTitle={item.price}
+							bottomDivider
+						/>)}
 			</View>
 		);
 	};
@@ -155,21 +154,6 @@ export default class App extends React.Component {
 						style={{ paddingVertical: 10, paddingHorizontal: 10 }}
 					>
 					*/
-	_renderText(){
-		// var text = [];
-		// var r = this.state.googleResponse.responses;
-		// for(var page in r){
-		// 	for(var blocks in r[page]){
-		// 		for(var paragraph in r[page][blocks]['textAnnotation']){
-		// 			console.log(paragraph);
-		// 			text.push(paragraph['text']);
-		// 		}
-		// 	}
-		// }
-		// console.log(text);
-		return 
-		//return text.map((i,word)=> <Text key={i}>{word}</Text>);
-	}
 
 	_keyExtractor = (item, index) => item.id;
 
@@ -255,11 +239,71 @@ export default class App extends React.Component {
 				}
 			);
 			let responseJson = await response.json();
-			console.log(responseJson.responses.fullTextAnnotation);
+
 			this.setState({
-				googleResponse: responseJson,
-				uploading: false
+				response: responseJson.responses[0].fullTextAnnotation,
 			});
+			
+			var text = [];
+			var items = [], index = 0;
+			var r = responseJson.responses[0].fullTextAnnotation.pages;
+			console.log('lol');
+			var start = false, end = false;
+			var last_word = null, total = 0, price = '', name = '';
+
+			for(var page in r){
+				for(var block in r[page].blocks){
+					for(var paragraph in r[page].blocks[block].paragraphs){
+						for(var word in r[page].blocks[block].paragraphs[paragraph].words){
+							var w = r[page].blocks[block].paragraphs[paragraph].words[word];
+							var temp = '';
+							for(var c in w.symbols){
+								temp += w.symbols[c].text;
+							}
+							console.log(temp);
+							if(temp == "GROCERY")
+								start = true;
+							if(start){
+								if(temp == "PAYMENTS"){
+									console.log(items);
+									this.setState({items: items,uploading: false});
+									return;
+								}
+								if (last_word == null)
+									last_word = temp;
+								else{
+									if(!isNaN(last_word)){
+										if (isNaN(temp))
+											items.push({name: last_word});
+										else
+											item.push({name: last_word + ' ' +})
+									}
+								}
+								if (+last_word != NaN && (temp == 'N' || temp == 'F')){
+									items[index]['price'] = +price;
+									index++;
+									price = '';
+								}
+								if (+temp != NaN && last_word == 'TOTAL'){
+									total = +temp;
+								}
+								if (+last_word != NaN && temp == '.'){
+									price += (last_word+temp);
+								}
+								if (last_word == "." && isNaN(temp)){
+									price += temp;
+								}
+								last_word = temp;
+							}
+							// if(w['property']['detectedBreak']['type']=='SURE_SPACE'){
+								
+							// 	console.log(temp);
+							// 	text.push(temp);
+							// }
+						}
+					}
+				}
+			}
 		} catch (error) {
 			console.log(error);
 		}
