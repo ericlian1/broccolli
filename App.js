@@ -11,7 +11,8 @@ import {
 	ScrollView,
 	View
 } from 'react-native';
-import { ImagePicker, Permissions } from 'expo';
+import * as ImagePicker from 'expo-image-picker';
+import * as Permissions from 'expo-permissions';
 import uuid from 'uuid';
 import Environment from './config/environment';
 import firebase from './config/firebase';
@@ -137,18 +138,35 @@ export default class App extends React.Component {
 
 				<Text>Raw JSON:</Text>
 
-				{googleResponse && (
-					<Text
+				{googleResponse && 
+					<Text>{this.state.googleResponse.responses.fullTextAnnotation}</Text>}
+			</View>
+		);
+	};
+
+	/*
+	(
+					<View
 						onPress={this._copyToClipboard}
 						onLongPress={this._share}
 						style={{ paddingVertical: 10, paddingHorizontal: 10 }}
 					>
-						JSON.stringify(googleResponse.responses)}
-					</Text>
-				)}
-			</View>
-		);
-	};
+					*/
+	_renderText(){
+		// var text = [];
+		// var r = this.state.googleResponse.responses;
+		// for(var page in r){
+		// 	for(var blocks in r[page]){
+		// 		for(var paragraph in r[page][blocks]['textAnnotation']){
+		// 			console.log(paragraph);
+		// 			text.push(paragraph['text']);
+		// 		}
+		// 	}
+		// }
+		// console.log(text);
+		return 
+		//return text.map((i,word)=> <Text key={i}>{word}</Text>);
+	}
 
 	_keyExtractor = (item, index) => item.id;
 
@@ -211,16 +229,7 @@ export default class App extends React.Component {
 				requests: [
 					{
 						features: [
-							{ type: 'LABEL_DETECTION', maxResults: 10 },
-							{ type: 'LANDMARK_DETECTION', maxResults: 5 },
-							{ type: 'FACE_DETECTION', maxResults: 5 },
-							{ type: 'LOGO_DETECTION', maxResults: 5 },
-							{ type: 'TEXT_DETECTION', maxResults: 5 },
-							{ type: 'DOCUMENT_TEXT_DETECTION', maxResults: 5 },
-							{ type: 'SAFE_SEARCH_DETECTION', maxResults: 5 },
-							{ type: 'IMAGE_PROPERTIES', maxResults: 5 },
-							{ type: 'CROP_HINTS', maxResults: 5 },
-							{ type: 'WEB_DETECTION', maxResults: 5 }
+							{ type: 'DOCUMENT_TEXT_DETECTION' }
 						],
 						image: {
 							source: {
@@ -243,7 +252,7 @@ export default class App extends React.Component {
 				}
 			);
 			let responseJson = await response.json();
-			console.log(responseJson);
+			console.log(responseJson.responses.fullTextAnnotation);
 			this.setState({
 				googleResponse: responseJson,
 				uploading: false
