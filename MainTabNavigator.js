@@ -27,7 +27,7 @@ export default createAppContainer(createBottomTabNavigator(
             iconName = 'ios-camera';
           } 
           else if(routeName==='List'){
-            iconName = 'ios-list-box'
+            iconName = 'ios-list-box';
           }
   
           // You can return any component that you like here! We usually use an
