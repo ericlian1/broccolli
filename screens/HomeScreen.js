@@ -19,7 +19,8 @@ import firebase from './config/firebase';
 import {ListItem} from 'react-native-elements';
 
 
-import MainTabNavigator from './navigation/MainTabNavigator';
+import MainTabNavigator from './MainTabNavigator';
+import React from 'react';
 
 export default class App extends React.Component {
 	state = {
