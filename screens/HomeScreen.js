@@ -14,13 +14,14 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import uuid from 'uuid';
-import Environment from './config/environment';
-import firebase from './config/firebase';
+import Environment from '../config/environment';
+import firebase from '../config/firebase';
 import {ListItem} from 'react-native-elements';
 
 
 import MainTabNavigator from './MainTabNavigator';
 import React from 'react';
+
 
 export default class App extends React.Component {
 	state = {
@@ -135,7 +136,7 @@ export default class App extends React.Component {
 
 				<Text>Raw JSON:</Text>
 
-				{googleResponse &&         
+				{this.state.response && this.state.items &&
 					this.state.items.map((item,i)=>
 						<ListItem
 							key={i}
@@ -178,7 +179,7 @@ export default class App extends React.Component {
 	_takePhoto = async () => {
 		let pickerResult = await ImagePicker.launchCameraAsync({
 			allowsEditing: true,
-			aspect: [4, 3]
+			//aspect: [4, 3]
 		});
 
 		this._handleImagePicked(pickerResult);
@@ -187,7 +188,7 @@ export default class App extends React.Component {
 	_pickImage = async () => {
 		let pickerResult = await ImagePicker.launchImageLibraryAsync({
 			allowsEditing: true,
-			aspect: [4, 3]
+			//aspect: [4, 3]
 		});
 
 		this._handleImagePicked(pickerResult);
@@ -250,52 +251,22 @@ export default class App extends React.Component {
 			var r = responseJson.responses[0].fullTextAnnotation.pages;
 			console.log('lol');
 			var start = false, end = false;
-			var last_word = null, total = 0, price = '', name = '';
+			var last_word = null, total = 0, item_x = null, price_x = null;
+			var item = '', price = '';
 
 			for(var page in r){
 				for(var block in r[page].blocks){
 					for(var paragraph in r[page].blocks[block].paragraphs){
 						for(var word in r[page].blocks[block].paragraphs[paragraph].words){
 							var w = r[page].blocks[block].paragraphs[paragraph].words[word];
+							
 							var temp = '';
 							for(var c in w.symbols){
 								temp += w.symbols[c].text;
 							}
 							console.log(temp);
-							if(temp == "GROCERY")
-								start = true;
-							if(start){
-								if(temp == "PAYMENTS"){
-									console.log(items);
-									this.setState({items: items,uploading: false});
-									return;
-								}
-								if (last_word == null)
-									last_word = temp;
-								else{
-									if(!isNaN(last_word)){
-										if (isNaN(temp))
-											items.push({name: last_word});
-										else
-											item.push({name: last_word + ' ' + temp})
-									}
-								}
-								if (+last_word != NaN && (temp == 'N' || temp == 'F')){
-									items[index]['price'] = +price;
-									index++;
-									price = '';
-								}
-								if (+temp != NaN && last_word == 'TOTAL'){
-									total = +temp;
-								}
-								if (+last_word != NaN && temp == '.'){
-									price += (last_word+temp);
-								}
-								if (last_word == "." && isNaN(temp)){
-									price += temp;
-								}
-								last_word = temp;
-							}
+							w.text = temp;
+							text.push(w);
 							// if(w['property']['detectedBreak']['type']=='SURE_SPACE'){
 								
 							// 	console.log(temp);
@@ -305,6 +276,68 @@ export default class App extends React.Component {
 					}
 				}
 			}
+
+			text.sort((a,b)=>{
+				if (Math.abs(a.boundingBox.vertices[0].y - b.boundingBox.vertices[0].y) > 15){
+					return a.boundingBox.vertices[0].y > b.boundingBox.vertices[0].y;
+				}else{
+					return a.boundingBox.vertices[0].x > b.boundingBox.vertices[0].x;
+				}
+			});
+
+			for(var i in text){
+				var temp = text[i].text;
+				console.log(temp);
+				console.log(text[i].boundingBox.vertices[0].x);
+				console.log(text[i].boundingBox.vertices[0].y);
+				console.log('---------');
+					if(temp == "GROCERY"){
+						start = true;
+						continue;
+					}
+					if(start){
+						if(temp == "TOTAL"){
+							//console.log(items);
+							this.setState({items: items,uploading: false});
+							return;
+						}
+						var tX = text[i].boundingBox.vertices[0].x;
+						if(isNaN(temp)){
+							if(item_x == null){
+								item_x = tX;
+								item += temp + ' ';
+							}
+							else{
+								if (temp.length > 1 && Math.abs(tX - item_x) < 20 && temp == temp.toUpperCase())
+									item += temp + ' ';
+								if (temp == 'N' || temp == 'F'){
+									if(price != ''){
+										items[index]['price'] = price;
+										price = '';
+										index++;
+									}
+								}
+								if (temp == '.' && (tX > price_x)){
+									price += '.';
+								}
+							}
+						}else{
+							if(item_x != null){
+								if(item != ''){
+									items.push({name: item});
+									item = '';
+								}
+								if(price_x == null){
+									price_x = tX;
+									price += temp;
+								}else{
+									if ((tX > price_x || Math.abs(tX - price_x) < 20)&& temp.length < 4)
+										price += temp;
+								}
+							}
+						}
+					}
+				}
 		} catch (error) {
 			console.log(error);
 		}
@@ -356,7 +389,7 @@ const styles = StyleSheet.create({
 
 	getStartedContainer: {
 		alignItems: 'center',
-		marginHorizontal: 50
+		marginHorizontal: 10
 	},
 
 	getStartedText: {
