@@ -11,5 +11,5 @@ Using the Google Cloud Vision API, we are able to parse text from an image of a 
 With a simple picture of your receipt, Karrot is able to extract your grocery data and provide valuable insights into your spending and eating habits and help you save money.
 
 ## Credit
-Thanks to [@amanhimself] for the base app
+Thanks to [@amanhimself](https://github.com/amandeepmittal/google-vision-rn-demo) for the base app
 Eric Lian, Ben Puzyscki, Sabrina Tobar, Darryl Wong
