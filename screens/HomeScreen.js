@@ -282,10 +282,10 @@ export default class App extends React.Component {
 
 			for(var i in text){
 				var temp = text[i].text;
-				console.log(temp);
-				console.log(text[i].boundingBox.vertices[0].x);
-				console.log(text[i].boundingBox.vertices[0].y);
-				console.log('---------');
+				// console.log(temp);
+				// console.log(text[i].boundingBox.vertices[0].x);
+				// console.log(text[i].boundingBox.vertices[0].y);
+				// console.log('---------');
 					if(temp == "GROCERY"){
 						start = true;
 						continue;
@@ -303,10 +303,12 @@ export default class App extends React.Component {
 								item += temp + ' ';
 							}
 							else{
-								if (temp.length > 1 && Math.abs(tX - item_x) < 20 && temp == temp.toUpperCase())
+								if (temp.length > 1 && (Math.abs(tX - item_x) < 20 || tX > item_x)
+									&& temp == temp.toUpperCase())
 									item += temp + ' ';
 								if (temp == 'N' || temp == 'F'){
 									if(price != ''){
+										console.log(price);
 										items[index]['price'] = price;
 										price = '';
 										index++;
@@ -319,6 +321,7 @@ export default class App extends React.Component {
 						}else{
 							if(item_x != null){
 								if(item != ''){
+									console.log(item);
 									items.push({name: item});
 									item = '';
 								}
