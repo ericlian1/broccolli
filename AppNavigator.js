@@ -34,14 +34,16 @@ class LoadingScreen extends React.Component {
 const AuthStack = createStackNavigator({ SignIn: SignInScreen });
 const LoadingStack = createStackNavigator({ Load: LoadingScreen });
 
-export default createAppContainer(createSwitchNavigator(
-  {
-    //Todo: add AuthLoading: AuthLoadingScreen,
-    App: MainTabNavigator,
-    Auth: AuthStack,
-    Loading: LoadingStack
-  },
-  {
-    initialRouteName: "Loading"
-  }
-));
+export default createAppContainer(
+  createSwitchNavigator(
+    {
+      //Todo: add AuthLoading: AuthLoadingScreen,
+      App: MainTabNavigator,
+      Auth: AuthStack,
+      Loading: LoadingStack
+    },
+    {
+      initialRouteName: "Loading"
+    }
+  )
+);

@@ -1,6 +1,6 @@
 import React from "react";
 import { Font, AppLoading, SplashScreen } from "expo";
-import {Asset} from 'expo-asset';
+import { Asset } from "expo-asset";
 import AppNavigator from "./AppNavigator";
 
 export default class App extends React.Component {
@@ -24,7 +24,10 @@ export default class App extends React.Component {
   }
 
   async _loadResourcesAsync() {
-    await Asset.loadAsync([require("./assets/icon.png"),require("./assets/auth.png")]);
+    await Asset.loadAsync([
+      require("./assets/icon.png"),
+      require("./assets/auth.png")
+    ]);
   }
 
   _handleLoadingError = error => {

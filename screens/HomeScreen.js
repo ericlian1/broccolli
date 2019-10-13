@@ -16,7 +16,7 @@ import * as Permissions from "expo-permissions";
 import uuid from "uuid";
 import Environment from "../config/environment";
 import firebase from "../config/firebase";
-import { Header, ListItem, Button } from "react-native-elements";
+import { Icon, Header, ListItem, Button } from "react-native-elements";
 
 export default class App extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -65,19 +65,18 @@ export default class App extends React.Component {
 
         <View style={styles.helpContainer}>
           <Button
-          	type='clear'
+            type="clear"
             onPress={this._pickImage}
             title="Pick an image from camera roll"
           />
 
-          <Button type='clear' onPress={this._takePhoto} title="Take a photo" />
+          <Button type="clear" onPress={this._takePhoto} title="Take a photo" />
           {this._maybeRenderImage()}
           {this._maybeRenderUploadingOverlay()}
         </View>
       </ScrollView>
     );
   }
-
 
   _maybeRenderUploadingOverlay = () => {
     if (this.state.uploading) {
@@ -113,13 +112,6 @@ export default class App extends React.Component {
           elevation: 2
         }}
       >
-        <Button
-        	type='clear'
-          style={{ marginBottom: 10 }}
-          onPress={() => this.submitToGoogle()}
-          title="Analyze!"
-        />
-
         <View
           style={{
             borderTopRightRadius: 3,
@@ -139,7 +131,13 @@ export default class App extends React.Component {
           style={{ paddingVertical: 10, paddingHorizontal: 10 }}
         />
 
-        <Text>Raw JSON:</Text>
+        {this.state.items && (
+          <Button
+            type="clear"
+            title="Upload!"
+            onPress={() => this.uploadToFirebase()}
+          />
+        )}
 
         {this.state.response &&
           this.state.items &&
@@ -151,7 +149,6 @@ export default class App extends React.Component {
               bottomDivider
             />
           ))}
-          {this.state.items&& <Button type='clear' title="Upload!" onPress={()=>this.uploadToFirebase()}/>}
       </View>
     );
   };
@@ -209,6 +206,7 @@ export default class App extends React.Component {
       if (!pickerResult.cancelled) {
         uploadUrl = await uploadImageAsync(pickerResult.uri);
         this.setState({ image: uploadUrl });
+        this.submitToGoogle();
       }
     } catch (e) {
       console.log(e);
@@ -223,6 +221,7 @@ export default class App extends React.Component {
       .database()
       .ref("/users/" + this.state.uniq + "/items/")
       .set(this.state.items);
+    Alert("Success!");
   }
 
   submitToGoogle = async () => {
@@ -313,7 +312,7 @@ export default class App extends React.Component {
         console.log(temp);
         console.log(text[i].boundingBox.vertices[0].x);
         console.log(text[i].boundingBox.vertices[0].y);
-        console.log('---------');
+        console.log("---------");
         if (temp == "GROCERY") {
           start = true;
           continue;
@@ -328,14 +327,20 @@ export default class App extends React.Component {
           if (isNaN(temp)) {
             if (item_x == null) {
               item_x = tX;
-              item += temp + " ";
+              item +=
+                temp.charAt(0).toUpperCase() +
+                temp.toLowerCase().substring(1) +
+                " ";
             } else {
               if (
                 temp.length > 1 &&
                 (Math.abs(tX - item_x) < 20 || tX > item_x - 10) &&
                 temp == temp.toUpperCase()
               )
-                item += temp + " ";
+                item +=
+                  temp.charAt(0).toUpperCase() +
+                  temp.toLowerCase().substring(1) +
+                  " ";
               if (temp == "N" || temp == "F") {
                 if (price != "") {
                   console.log(price);

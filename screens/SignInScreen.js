@@ -8,7 +8,7 @@ import {
   ImageBackground,
   Platform
 } from "react-native";
-import * as Google from 'expo-google-app-auth';
+import * as Google from "expo-google-app-auth";
 import { SocialIcon, Button, Icon } from "react-native-elements";
 
 export default class SignInScreen extends React.Component {
