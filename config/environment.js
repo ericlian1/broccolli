@@ -1,15 +1,14 @@
-// change the file name dummy.environment.js to "environment.js"
-// and add your keys below
+// add your keys below
 
 var environments = {
   staging: {
-    FIREBASE_API_KEY: "AIzaSyCijZIwYYrXKetkFcenl_yVqp1vEYijtyY",
-    FIREBASE_AUTH_DOMAIN: "receipt-bbca6.firebaseapp.com",
-    FIREBASE_DATABASE_URL: "https://receipt-bbca6.firebaseio.com",
-    FIREBASE_PROJECT_ID: "receipt-bbca6",
-    FIREBASE_STORAGE_BUCKET: "receipt-bbca6.appspot.com",
-    FIREBASE_MESSAGING_SENDER_ID: "946958434268",
-    GOOGLE_CLOUD_VISION_API_KEY: "AIzaSyAjNJMBGPY42r4VxFvqHXrghpwf4IKjHf8"
+    FIREBASE_API_KEY: "",
+    FIREBASE_AUTH_DOMAIN: "",
+    FIREBASE_DATABASE_URL: "",
+    FIREBASE_PROJECT_ID: "",
+    FIREBASE_STORAGE_BUCKET: "",
+    FIREBASE_MESSAGING_SENDER_ID: "",
+    GOOGLE_CLOUD_VISION_API_KEY: ""
   },
   production: {
     // Warning: This file still gets included in your native binary and is not a secure way to store secrets if you build for the app stores. Details: https://github.com/expo/expo/issues/83
